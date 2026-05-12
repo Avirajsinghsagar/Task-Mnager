@@ -27,7 +27,9 @@ function Projects() {
 
 
   useEffect(() => {
+
     fetchProjects();
+
   }, []);
 
 
@@ -41,6 +43,7 @@ function Projects() {
 
 
   const handleSubmit = async (e) => {
+
     e.preventDefault();
 
     try {
@@ -54,7 +57,10 @@ function Projects() {
         description: "",
       });
 
+      window.location.reload();
+
     } catch (error) {
+
       console.log(error);
     }
   };
@@ -80,6 +86,7 @@ function Projects() {
           value={formData.title}
           onChange={handleChange}
           className="w-full border p-3 mb-4 rounded"
+          required
         />
 
         <textarea
@@ -88,6 +95,7 @@ function Projects() {
           value={formData.description}
           onChange={handleChange}
           className="w-full border p-3 mb-4 rounded"
+          required
         />
 
         <button

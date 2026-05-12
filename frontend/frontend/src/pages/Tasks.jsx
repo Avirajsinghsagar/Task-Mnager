@@ -25,6 +25,7 @@ function Tasks() {
       setTasks(data);
 
     } catch (error) {
+
       console.log(error);
     }
   };
@@ -39,6 +40,7 @@ function Tasks() {
       setProjects(data);
 
     } catch (error) {
+
       console.log(error);
     }
   };
@@ -63,6 +65,7 @@ function Tasks() {
 
 
   const handleSubmit = async (e) => {
+
     e.preventDefault();
 
     try {
@@ -78,7 +81,10 @@ function Tasks() {
         priority: "medium",
       });
 
+      window.location.reload();
+
     } catch (error) {
+
       console.log(error);
     }
   };
@@ -94,7 +100,10 @@ function Tasks() {
 
       fetchTasks();
 
+      window.location.reload();
+
     } catch (error) {
+
       console.log(error);
     }
   };
@@ -120,6 +129,7 @@ function Tasks() {
           value={formData.title}
           onChange={handleChange}
           className="w-full border p-3 mb-4 rounded"
+          required
         />
 
 
@@ -129,6 +139,7 @@ function Tasks() {
           value={formData.description}
           onChange={handleChange}
           className="w-full border p-3 mb-4 rounded"
+          required
         />
 
 
@@ -137,6 +148,7 @@ function Tasks() {
           value={formData.project}
           onChange={handleChange}
           className="w-full border p-3 mb-4 rounded"
+          required
         >
 
           <option value="">
