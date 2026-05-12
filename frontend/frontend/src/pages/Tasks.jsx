@@ -72,7 +72,9 @@ function Tasks() {
 
       await API.post("/tasks", formData);
 
-      fetchTasks();
+      const { data } = await API.get("/tasks");
+
+      setTasks(data);
 
       setFormData({
         title: "",
@@ -80,8 +82,6 @@ function Tasks() {
         project: "",
         priority: "medium",
       });
-
-      window.location.reload();
 
     } catch (error) {
 
@@ -98,9 +98,9 @@ function Tasks() {
         status,
       });
 
-      fetchTasks();
+      const { data } = await API.get("/tasks");
 
-      window.location.reload();
+      setTasks(data);
 
     } catch (error) {
 
@@ -151,7 +151,7 @@ function Tasks() {
           required
         >
 
-          <option value="">
+          <option value="" disabled>
             Select Project
           </option>
 

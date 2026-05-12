@@ -21,6 +21,7 @@ function Projects() {
       setProjects(data);
 
     } catch (error) {
+
       console.log(error);
     }
   };
@@ -50,14 +51,14 @@ function Projects() {
 
       await API.post("/projects", formData);
 
-      fetchProjects();
+      const { data } = await API.get("/projects");
+
+      setProjects(data);
 
       setFormData({
         title: "",
         description: "",
       });
-
-      window.location.reload();
 
     } catch (error) {
 
