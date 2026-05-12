@@ -1,5 +1,7 @@
 import { useContext, useEffect, useState } from "react";
+
 import API from "../api/axios";
+
 import { AuthContext } from "../context/AuthContext";
 
 function Dashboard() {
@@ -13,27 +15,27 @@ function Dashboard() {
     todoTasks: 0,
   });
 
+  const fetchStats = async () => {
+
+    try {
+
+      const { data } = await API.get("/dashboard");
+
+      setStats(data);
+
+    } catch (error) {
+
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
-
-    const fetchStats = async () => {
-
-      try {
-
-        const { data } = await API.get("/dashboard");
-
-        setStats(data);
-
-      } catch (error) {
-
-        console.log(error);
-      }
-    };
 
     fetchStats();
 
     const interval = setInterval(() => {
       fetchStats();
-    }, 2000);
+    }, 3000);
 
     return () => clearInterval(interval);
 
@@ -45,6 +47,7 @@ function Dashboard() {
       <div className="flex justify-between items-center mb-8">
 
         <div>
+
           <h1 className="text-3xl font-bold">
             Dashboard
           </h1>
@@ -52,6 +55,7 @@ function Dashboard() {
           <p className="text-gray-600 mt-2">
             Welcome, {user?.name}
           </p>
+
         </div>
 
         <button
@@ -69,6 +73,7 @@ function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
 
         <div className="bg-white p-6 rounded shadow">
+
           <h2 className="text-xl font-bold">
             Total Projects
           </h2>
@@ -76,9 +81,11 @@ function Dashboard() {
           <p className="text-4xl mt-4 font-bold">
             {stats.totalProjects}
           </p>
+
         </div>
 
         <div className="bg-white p-6 rounded shadow">
+
           <h2 className="text-xl font-bold">
             Total Tasks
           </h2>
@@ -86,9 +93,11 @@ function Dashboard() {
           <p className="text-4xl mt-4 font-bold">
             {stats.totalTasks}
           </p>
+
         </div>
 
         <div className="bg-white p-6 rounded shadow">
+
           <h2 className="text-xl font-bold">
             Completed Tasks
           </h2>
@@ -96,9 +105,11 @@ function Dashboard() {
           <p className="text-4xl mt-4 font-bold">
             {stats.completedTasks}
           </p>
+
         </div>
 
         <div className="bg-white p-6 rounded shadow">
+
           <h2 className="text-xl font-bold">
             Todo Tasks
           </h2>
@@ -106,6 +117,7 @@ function Dashboard() {
           <p className="text-4xl mt-4 font-bold">
             {stats.todoTasks}
           </p>
+
         </div>
 
       </div>

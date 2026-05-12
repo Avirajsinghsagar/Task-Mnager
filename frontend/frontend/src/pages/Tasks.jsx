@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+
 import API from "../api/axios";
 
 function Tasks() {
 
   const [tasks, setTasks] = useState([]);
+
   const [projects, setProjects] = useState([]);
 
   const [formData, setFormData] = useState({
@@ -35,6 +37,14 @@ function Tasks() {
 
       setProjects(data);
 
+      if (data.length > 0) {
+
+        setFormData((prev) => ({
+          ...prev,
+          project: prev.project || data[0]._id,
+        }));
+      }
+
     } catch (error) {
 
       console.log(error);
@@ -44,6 +54,7 @@ function Tasks() {
   useEffect(() => {
 
     fetchTasks();
+
     fetchProjects();
 
   }, []);
@@ -60,11 +71,6 @@ function Tasks() {
 
     e.preventDefault();
 
-    if (!formData.project) {
-      alert("Please select a project");
-      return;
-    }
-
     try {
 
       await API.post("/tasks", formData);
@@ -74,7 +80,7 @@ function Tasks() {
       setFormData({
         title: "",
         description: "",
-        project: "",
+        project: projects[0]?._id || "",
         priority: "medium",
       });
 
@@ -139,21 +145,16 @@ function Tasks() {
           required
         >
 
-          <option value="">
-            Select Project
-          </option>
+          {projects.map((project) => (
 
-          {projects.length > 0 &&
-            projects.map((project) => (
+            <option
+              key={project._id}
+              value={project._id}
+            >
+              {project.title}
+            </option>
 
-              <option
-                key={project._id}
-                value={project._id}
-              >
-                {project.title}
-              </option>
-
-            ))}
+          ))}
 
         </select>
 
