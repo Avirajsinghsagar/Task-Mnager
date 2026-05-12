@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
-
 import API from "../api/axios";
 
 function Tasks() {
 
   const [tasks, setTasks] = useState([]);
-
   const [projects, setProjects] = useState([]);
 
   const [formData, setFormData] = useState({
@@ -14,7 +12,6 @@ function Tasks() {
     project: "",
     priority: "medium",
   });
-
 
   const fetchTasks = async () => {
 
@@ -30,7 +27,6 @@ function Tasks() {
     }
   };
 
-
   const fetchProjects = async () => {
 
     try {
@@ -45,15 +41,12 @@ function Tasks() {
     }
   };
 
-
   useEffect(() => {
 
     fetchTasks();
-
     fetchProjects();
 
   }, []);
-
 
   const handleChange = (e) => {
 
@@ -63,18 +56,20 @@ function Tasks() {
     });
   };
 
-
   const handleSubmit = async (e) => {
 
     e.preventDefault();
+
+    if (!formData.project) {
+      alert("Please select a project");
+      return;
+    }
 
     try {
 
       await API.post("/tasks", formData);
 
-      const { data } = await API.get("/tasks");
-
-      setTasks(data);
+      fetchTasks();
 
       setFormData({
         title: "",
@@ -89,7 +84,6 @@ function Tasks() {
     }
   };
 
-
   const updateStatus = async (id, status) => {
 
     try {
@@ -98,9 +92,7 @@ function Tasks() {
         status,
       });
 
-      const { data } = await API.get("/tasks");
-
-      setTasks(data);
+      fetchTasks();
 
     } catch (error) {
 
@@ -108,14 +100,12 @@ function Tasks() {
     }
   };
 
-
   return (
     <div className="min-h-screen bg-gray-100 p-6">
 
       <h1 className="text-3xl font-bold mb-6">
         Tasks
       </h1>
-
 
       <form
         onSubmit={handleSubmit}
@@ -132,7 +122,6 @@ function Tasks() {
           required
         />
 
-
         <textarea
           name="description"
           placeholder="Task Description"
@@ -142,7 +131,6 @@ function Tasks() {
           required
         />
 
-
         <select
           name="project"
           value={formData.project}
@@ -151,23 +139,23 @@ function Tasks() {
           required
         >
 
-          <option value="" disabled>
+          <option value="">
             Select Project
           </option>
 
-          {projects.map((project) => (
+          {projects.length > 0 &&
+            projects.map((project) => (
 
-            <option
-              key={project._id}
-              value={project._id}
-            >
-              {project.title}
-            </option>
+              <option
+                key={project._id}
+                value={project._id}
+              >
+                {project.title}
+              </option>
 
-          ))}
+            ))}
 
         </select>
-
 
         <select
           name="priority"
@@ -190,7 +178,6 @@ function Tasks() {
 
         </select>
 
-
         <button
           type="submit"
           className="bg-black text-white px-6 py-3 rounded"
@@ -199,7 +186,6 @@ function Tasks() {
         </button>
 
       </form>
-
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
@@ -232,7 +218,6 @@ function Tasks() {
               <strong>Priority:</strong>{" "}
               {task.priority}
             </p>
-
 
             <select
               value={task.status}

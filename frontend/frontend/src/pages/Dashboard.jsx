@@ -1,133 +1,112 @@
-import { useEffect, useState } from "react";
-
+import { useContext, useEffect, useState } from "react";
 import API from "../api/axios";
+import { AuthContext } from "../context/AuthContext";
 
-function Projects() {
+function Dashboard() {
 
-  const [projects, setProjects] = useState([]);
+  const { user, logout } = useContext(AuthContext);
 
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
+  const [stats, setStats] = useState({
+    totalProjects: 0,
+    totalTasks: 0,
+    completedTasks: 0,
+    todoTasks: 0,
   });
-
-
-  const fetchProjects = async () => {
-
-    try {
-
-      const { data } = await API.get("/projects");
-
-      setProjects(data);
-
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
 
   useEffect(() => {
 
-    fetchProjects();
+    const fetchStats = async () => {
+
+      try {
+
+        const { data } = await API.get("/dashboard");
+
+        setStats(data);
+
+      } catch (error) {
+
+        console.log(error);
+      }
+    };
+
+    fetchStats();
+
+    const interval = setInterval(() => {
+      fetchStats();
+    }, 2000);
+
+    return () => clearInterval(interval);
 
   }, []);
-
-
-  const handleChange = (e) => {
-
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-
-  const handleSubmit = async (e) => {
-
-    e.preventDefault();
-
-    try {
-
-      await API.post("/projects", formData);
-
-      fetchProjects();
-
-      setFormData({
-        title: "",
-        description: "",
-      });
-
-      window.location.reload();
-
-    } catch (error) {
-
-      console.log(error);
-    }
-  };
-
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
 
-      <h1 className="text-3xl font-bold mb-6">
-        Projects
-      </h1>
+      <div className="flex justify-between items-center mb-8">
 
+        <div>
+          <h1 className="text-3xl font-bold">
+            Dashboard
+          </h1>
 
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded shadow mb-6"
-      >
-
-        <input
-          type="text"
-          name="title"
-          placeholder="Project Title"
-          value={formData.title}
-          onChange={handleChange}
-          className="w-full border p-3 mb-4 rounded"
-          required
-        />
-
-        <textarea
-          name="description"
-          placeholder="Project Description"
-          value={formData.description}
-          onChange={handleChange}
-          className="w-full border p-3 mb-4 rounded"
-          required
-        />
+          <p className="text-gray-600 mt-2">
+            Welcome, {user?.name}
+          </p>
+        </div>
 
         <button
-          type="submit"
-          className="bg-black text-white px-6 py-3 rounded"
+          onClick={() => {
+            logout();
+            window.location.href = "/";
+          }}
+          className="bg-red-500 text-white px-4 py-2 rounded"
         >
-          Create Project
+          Logout
         </button>
 
-      </form>
+      </div>
 
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="bg-white p-6 rounded shadow">
+          <h2 className="text-xl font-bold">
+            Total Projects
+          </h2>
 
-        {projects.map((project) => (
+          <p className="text-4xl mt-4 font-bold">
+            {stats.totalProjects}
+          </p>
+        </div>
 
-          <div
-            key={project._id}
-            className="bg-white p-6 rounded shadow"
-          >
+        <div className="bg-white p-6 rounded shadow">
+          <h2 className="text-xl font-bold">
+            Total Tasks
+          </h2>
 
-            <h2 className="text-2xl font-bold mb-2">
-              {project.title}
-            </h2>
+          <p className="text-4xl mt-4 font-bold">
+            {stats.totalTasks}
+          </p>
+        </div>
 
-            <p className="text-gray-600">
-              {project.description}
-            </p>
+        <div className="bg-white p-6 rounded shadow">
+          <h2 className="text-xl font-bold">
+            Completed Tasks
+          </h2>
 
-          </div>
+          <p className="text-4xl mt-4 font-bold">
+            {stats.completedTasks}
+          </p>
+        </div>
 
-        ))}
+        <div className="bg-white p-6 rounded shadow">
+          <h2 className="text-xl font-bold">
+            Todo Tasks
+          </h2>
+
+          <p className="text-4xl mt-4 font-bold">
+            {stats.todoTasks}
+          </p>
+        </div>
 
       </div>
 
@@ -135,4 +114,4 @@ function Projects() {
   );
 }
 
-export default Projects;
+export default Dashboard;
