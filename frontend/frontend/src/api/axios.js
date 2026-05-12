@@ -4,24 +4,15 @@ const API = axios.create({
   baseURL: "https://task-mnager-production.up.railway.app/api",
 });
 
-API.interceptors.request.use(
-  (req) => {
+API.interceptors.request.use((req) => {
 
-    const userInfo = localStorage.getItem("userInfo");
+  const token = localStorage.getItem("token");
 
-    if (userInfo) {
-
-      const token = JSON.parse(userInfo).token;
-
-      req.headers.Authorization = `Bearer ${token}`;
-    }
-
-    return req;
-  },
-
-  (error) => {
-    return Promise.reject(error);
+  if (token) {
+    req.headers.Authorization = `Bearer ${token}`;
   }
-);
+
+  return req;
+});
 
 export default API;
